@@ -1,0 +1,17 @@
+[package]
+name = "pageshot"
+version = "0.1.2"
+edition = "2021"
+license = "MIT"
+authors = ["kremilly"]
+keywords = ["screenshot", "capture", "url", "pageshot"]
+description = "Capture screenshots of web pages from specified URL using Rust. Customize viewport dimensions and save the resulting image in PNG format."
+repository = "https://github.com/kremilly/PageShot"
+documentation = "https://kremilly.com/docs/pageshot"
+homepage = "https://kremilly.com"
+
+[dependencies]
+anyhow = "1.0.100"
+clap = { version = "4.5.49", features = ["cargo", "derive"] }
+headless_chrome = "1.0.18"
+tokio = { version = "1.48.0", features = ["full"] }
