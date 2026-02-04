@@ -1,4 +1,8 @@
+mod youtube;
+
+use std::ffi::OsStr;
 use std::fs;
+use std::time::{Duration, Instant};
 use clap::Parser;
 use anyhow::Result;
 
@@ -44,6 +48,14 @@ struct Args {
     #[arg(long, default_value_t = 1.0)]
     scale: f64,
 
+    /// Enable YouTube mode: stealth, consent dismissal, ad waiting, theatre mode, video playback
+    #[arg(long)]
+    youtube: bool,
+
+    /// Maximum seconds to wait for video readiness (used with --youtube)
+    #[arg(long, default_value_t = 30)]
+    wait_timeout: u64,
+
     /// Suppress success message
     #[arg(short, long)]
     silent: bool,
@@ -69,18 +81,32 @@ fn main() -> Result<()> {
     // Clamp scale factor to valid range (1.0 to 3.0)
     let scale = args.scale.clamp(1.0, 3.0);
 
-    let mut options = LaunchOptions::default_builder()
-        .headless(true)
-        .build()
+    let autoplay_flag = OsStr::new("--autoplay-policy=no-user-gesture-required");
+    let mut builder = LaunchOptions::default_builder();
+    builder.headless(true);
+    if args.youtube {
+        builder.args(vec![autoplay_flag]);
+    }
+    let mut options = builder.build()
         .map_err(|_| anyhow::anyhow!("Couldn't find appropriate Chrome binary."))?;
 
     options.window_size = Some((args.width, args.height));
 
+    let deadline = Instant::now() + Duration::from_secs(args.wait_timeout);
+
     let browser = Browser::new(options)?;
     let tab = browser.new_tab()?;
 
+    if args.youtube {
+        tab.enable_stealth_mode()?;
+    }
+
     tab.navigate_to(&args.url)?
         .wait_until_navigated()?;
+
+    if args.youtube {
+        youtube::prepare(&tab, deadline, args.wait_timeout)?;
+    }
 
     // Determine final dimensions based on full_page flag
     let (final_width, final_height) = if args.full_page {

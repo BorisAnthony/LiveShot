@@ -1,14 +1,12 @@
 [package]
-name = "pageshot"
-version = "0.2.0"
+name = "liveshot"
+version = "0.1.0"
 edition = "2021"
 license = "MIT"
-authors = ["kremilly"]
-keywords = ["screenshot", "capture", "url", "pageshot"]
-description = "Capture screenshots of web pages from specified URL using Rust. Customize viewport dimensions and save the resulting image in PNG format."
-repository = "https://github.com/kremilly/PageShot"
-documentation = "https://kremilly.com/docs/pageshot"
-homepage = "https://kremilly.com"
+authors = ["BorisAnthony"]
+keywords = ["screenshot", "capture", "youtube", "livestream", "video"]
+description = "Capture screenshots of web pages and YouTube live streams using headless Chrome."
+repository = "https://github.com/BorisAnthony/LiveShot"
 
 [dependencies]
 anyhow = "1.0.100"
