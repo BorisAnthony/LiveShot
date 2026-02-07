@@ -99,13 +99,14 @@ fn main() -> Result<()> {
 
     if args.youtube {
         tab.enable_stealth_mode()?;
+        youtube::set_consent_cookie(&tab)?;
     }
 
     tab.navigate_to(&args.url)?
         .wait_until_navigated()?;
 
     if args.youtube {
-        youtube::prepare(&tab, deadline, args.wait_timeout)?;
+        youtube::prepare(&tab, deadline, args.wait_timeout, &args.url)?;
     }
 
     // Determine final dimensions based on full_page flag
