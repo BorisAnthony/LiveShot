@@ -18,3 +18,5 @@ Cargo.lock
 *.jpg
 *.gif
 *.jpeg
+
+README.local*
